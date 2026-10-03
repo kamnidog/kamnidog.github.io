@@ -1,7 +1,0 @@
-{
-  "name": "teacherday",
-  "private": true,
-  "scripts": {
-    "start": "npx --yes serve -l 5173"
-  }
-}
