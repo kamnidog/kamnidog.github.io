@@ -4,9 +4,12 @@
     HINTS,
     QUESTIONS,
     CONGRATS_TEXT,
-    GIF_SLOTS,
     SCORE_MESSAGES,
     CORRECT_TOASTS,
+    SLIDE_INTERVAL_MS,
+    SLIDES_LEFT,
+    SLIDES_RIGHT,
+    VIDEO_BOTTOM,
   } = window.TEACHER_DAY;
   const LETTERS = ["А", "Б", "В", "Г"];
 
@@ -30,7 +33,9 @@
     scoreValue: document.getElementById("score-value"),
     scorePhrase: document.getElementById("score-phrase"),
     congratsText: document.getElementById("congrats-text"),
-    gifGrid: document.getElementById("gif-grid"),
+    slidesLeft: document.getElementById("slides-left"),
+    slidesRight: document.getElementById("slides-right"),
+    photoBottom: document.getElementById("photo-bottom"),
     restartBtn: document.getElementById("restart-btn"),
     sparkles: document.getElementById("sparkles"),
     toast: document.getElementById("toast"),
@@ -42,6 +47,7 @@
   let score = 0;
   let locked = false;
   let toastTimer = null;
+  const slideTimers = [];
 
   function showScreen(name) {
     Object.entries(screens).forEach(([key, el]) => {
@@ -152,19 +158,110 @@
     }
   }
 
+  function stopSlideshows() {
+    while (slideTimers.length) {
+      clearInterval(slideTimers.pop());
+    }
+  }
+
+  function mountSlideshow(container, sources, placeholder) {
+    container.innerHTML = "";
+    const list = (sources || []).filter(Boolean);
+
+    if (!list.length) {
+      container.innerHTML = `<span class="photo-placeholder">${placeholder}</span>`;
+      return;
+    }
+
+    const images = list.map((src, index) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.loading = "lazy";
+      if (index === 0) img.classList.add("is-active");
+      img.addEventListener("error", () => {
+        img.remove();
+        if (!container.querySelector("img") && !container.querySelector(".photo-placeholder")) {
+          container.innerHTML = `<span class="photo-placeholder">${placeholder}</span>`;
+        }
+      });
+      container.appendChild(img);
+      return img;
+    });
+
+    if (images.length <= 1) return;
+
+    let index = 0;
+    const timer = setInterval(() => {
+      const alive = [...container.querySelectorAll("img")];
+      if (alive.length <= 1) {
+        clearInterval(timer);
+        return;
+      }
+      alive[index % alive.length].classList.remove("is-active");
+      index = (index + 1) % alive.length;
+      alive[index].classList.add("is-active");
+    }, SLIDE_INTERVAL_MS || 3000);
+
+    slideTimers.push(timer);
+  }
+
+  function videoMime(src) {
+    const lower = String(src || "").toLowerCase();
+    if (lower.endsWith(".mov")) return "video/quicktime";
+    if (lower.endsWith(".webm")) return "video/webm";
+    return "video/mp4";
+  }
+
+  function mountBottomVideo() {
+    els.photoBottom.innerHTML = "";
+    if (!VIDEO_BOTTOM) {
+      els.photoBottom.innerHTML = `<span class="photo-placeholder">Место для видео</span>`;
+      return;
+    }
+
+    const video = document.createElement("video");
+    video.className = "bottom-video";
+    video.controls = true;
+    video.autoplay = true;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("muted", "");
+    video.preload = "auto";
+
+    const source = document.createElement("source");
+    source.src = VIDEO_BOTTOM;
+    source.type = videoMime(VIDEO_BOTTOM);
+    video.appendChild(source);
+
+    video.addEventListener("error", () => {
+      els.photoBottom.innerHTML = `<span class="photo-placeholder">Не удалось загрузить видео (.mov лучше открывается в Safari; для Chrome/Firefox положи ещё .mp4)</span>`;
+    });
+
+    els.photoBottom.appendChild(video);
+
+    const tryPlay = () => {
+      video.play().catch(() => {
+        /* браузер может блокировать автозапуск — останутся controls */
+      });
+    };
+    video.addEventListener("loadeddata", tryPlay, { once: true });
+    tryPlay();
+  }
+
   function showCongrats() {
     const total = QUESTIONS.length;
     els.scoreValue.textContent = `Правильных ответов: ${score} из ${total}`;
     els.scorePhrase.textContent = scorePhrase(score);
     els.congratsText.textContent = CONGRATS_TEXT;
-    els.gifGrid.innerHTML = GIF_SLOTS.map(
-      (slot) => `
-        <div class="gif-slot" aria-label="${slot.label}">
-          <strong>${slot.label}</strong>
-          <span>${slot.hint}</span>
-        </div>
-      `
-    ).join("");
+
+    stopSlideshows();
+    mountSlideshow(els.slidesLeft, SLIDES_LEFT, "Фото слева");
+    mountSlideshow(els.slidesRight, SLIDES_RIGHT, "Фото справа");
+    mountBottomVideo();
+
     showScreen("congrats");
     burstSparkles();
   }
@@ -227,6 +324,7 @@
   els.restartBtn.addEventListener("click", () => {
     currentQuestion = 0;
     score = 0;
+    stopSlideshows();
     els.input.value = "";
     els.error.hidden = true;
     showScreen("password");

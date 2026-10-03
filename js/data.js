@@ -136,12 +136,19 @@ window.TEACHER_DAY = {
     "Мы тебя ценим и очень любим. С Днём учителя!",
   ].join("\n"),
 
-  GIF_SLOTS: [
-    { label: "Гифка 1", hint: "Вставь сюда gif / url" },
-    { label: "Гифка 2", hint: "Вставь сюда gif / url" },
-    { label: "Гифка 3", hint: "Вставь сюда gif / url" },
-    { label: "Гифка 4", hint: "Вставь сюда gif / url" },
-    { label: "Гифка 5", hint: "Вставь сюда gif / url" },
-    { label: "Гифка 6", hint: "Вставь сюда gif / url" },
+  /** Интервал смены картинок слева/справа (мс) */
+  SLIDE_INTERVAL_MS: 750,
+
+  /** Картинки-слайды: положи файлы в images/ и пропиши пути */
+  SLIDES_LEFT: [
+    "images/IMG_20261003_194525_607.png",
+    "images/IMG_20261003_194527_710.png",
   ],
+  SLIDES_RIGHT: [
+    "images/20261003_185354(2)(1) (1).png",
+    "images/20261003_185354(2)(1).png",
+  ],
+
+  /** Видео под текстом (.mov / .mp4) — положи файл в images/ */
+  VIDEO_BOTTOM: "images/IMG_9981.mp4",
 };

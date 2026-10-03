@@ -76,23 +76,27 @@
       </section>
 
       <section id="screen-congrats" class="screen" aria-label="Поздравление" hidden>
-        <div class="congrats-hero">
-          <div class="brand-mark">5 октября</div>
-          <h1 class="congrats-title">
-            <span class="script">С Днём учителя!</span>
-            <span class="display">Дорогой куратор</span>
-          </h1>
-          <div class="score-banner" id="score-banner">
-            <p class="score-value" id="score-value"></p>
-            <p class="score-phrase" id="score-phrase"></p>
+        <div class="congrats-layout">
+          <div class="photo-slideshow" id="slides-left" aria-label="Фото слева"></div>
+
+          <div class="congrats-hero">
+            <div class="brand-mark">5 октября</div>
+            <h1 class="congrats-title">
+              <span class="script">С Днём учителя!</span>
+              <span class="display">Дорогой куратор</span>
+            </h1>
+            <div class="score-banner" id="score-banner">
+              <p class="score-value" id="score-value"></p>
+              <p class="score-phrase" id="score-phrase"></p>
+            </div>
+            <p class="congrats-text" id="congrats-text"></p>
           </div>
-          <p class="congrats-text" id="congrats-text"></p>
+
+          <div class="photo-slideshow" id="slides-right" aria-label="Фото справа"></div>
         </div>
 
-        <div class="gif-section">
-          <h2 class="section-title">Наши гифки-поздравления</h2>
-          <p class="gif-note">Сюда можно вставить 6 гифок — пока стоят заглушки.</p>
-          <div class="gif-grid" id="gif-grid"></div>
+        <div class="photo-bottom" id="photo-bottom" aria-label="Видео внизу">
+          <span class="photo-placeholder">Место для видео</span>
         </div>
 
         <button type="button" class="btn btn-ghost" id="restart-btn">Пройти ещё раз</button>

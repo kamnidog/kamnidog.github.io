@@ -180,8 +180,7 @@ body {
 }
 
 .lead,
-.congrats-text,
-.gif-note {
+.congrats-text {
   font-size: 1.05rem;
   line-height: 1.65;
   color: var(--ink-soft);
@@ -487,13 +486,92 @@ body {
   background: linear-gradient(145deg, var(--rose-400), var(--rose-600));
 }
 
+.congrats-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr) minmax(180px, 280px);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
 .congrats-hero {
   text-align: center;
-  padding: 1.5rem 0.5rem 2rem;
+  padding: 0.5rem 0.25rem;
+  min-width: 0;
 }
 
 .congrats-hero .brand-mark {
   margin-bottom: 1rem;
+}
+
+.photo-slideshow,
+.photo-bottom {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid rgba(244, 114, 182, 0.45);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.85), transparent 45%),
+    linear-gradient(145deg, #ffe0ef, #ffc2de);
+  box-shadow: 0 12px 28px rgba(219, 39, 119, 0.12);
+}
+
+.photo-slideshow {
+  min-height: 360px;
+}
+
+.photo-slideshow img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.photo-slideshow img.is-active {
+  opacity: 1;
+}
+
+.bottom-video {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+  vertical-align: middle;
+}
+
+.photo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 800;
+  color: var(--rose-800);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
+.photo-bottom {
+  margin: 1.5rem auto 0;
+  width: min(100%, 680px);
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 22px;
 }
 
 .score-banner {
@@ -530,76 +608,13 @@ body {
   max-width: 40rem;
 }
 
-.gif-section {
-  margin-top: 1.5rem;
-  padding: 1.5rem;
-  border-radius: var(--radius);
-  background: rgba(255, 250, 252, 0.72);
-  border: 1px solid rgba(249, 168, 212, 0.55);
-  box-shadow: var(--shadow);
-}
-
-.gif-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1.25rem;
-}
-
-.gif-slot {
-  aspect-ratio: 1;
-  border-radius: 22px;
-  border: 2px dashed rgba(219, 39, 119, 0.45);
-  background:
-    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.85), transparent 45%),
-    linear-gradient(145deg, #ffe0ef, #ffc2de);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  text-align: center;
-  padding: 1rem;
-  position: relative;
-  overflow: hidden;
-  animation: pulseSoft 4s ease-in-out infinite;
-}
-
-.gif-slot:nth-child(2n) {
-  animation-delay: -1.2s;
-}
-
-.gif-slot:nth-child(3n) {
-  animation-delay: -2.4s;
-}
-
-.gif-slot strong {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  color: var(--rose-800);
-}
-
-.gif-slot span {
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  max-width: 10rem;
-}
-
-.gif-slot img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 #screen-congrats {
   text-align: center;
 }
 
 #screen-congrats .btn-ghost {
-  margin-left: auto;
-  margin-right: auto;
+  display: inline-flex;
+  margin: 1.75rem auto 0;
 }
 
 @keyframes float {
@@ -669,13 +684,26 @@ body {
   }
 
   .password-panel,
-  .question-panel,
-  .gif-section {
+  .question-panel {
     padding: 1.15rem;
   }
 
-  .gif-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .congrats-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+
+  .congrats-hero {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .photo-slideshow {
+    min-height: 180px;
+  }
+
+  .bottom-video {
+    max-height: 300px;
   }
 
   .hint-item {
