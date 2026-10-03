@@ -63,9 +63,15 @@
   }
 
   function scorePhrase(correctCount) {
-    if (correctCount <= 4) return SCORE_MESSAGES.low;
-    if (correctCount <= 8) return SCORE_MESSAGES.mid;
-    return SCORE_MESSAGES.high;
+    const messages = SCORE_MESSAGES || {};
+    if (correctCount <= 4) return messages.low || "Слабовато!";
+    if (correctCount <= 8) return messages.mid || "Хорошо!";
+    return messages.high || "Молодец!";
+  }
+
+  function mediaUrl(src) {
+    // пробелы и скобки в именах файлов на GitHub Pages
+    return encodeURI(String(src || "").replace(/\\/g, "/"));
   }
 
   function renderHints() {
@@ -165,6 +171,7 @@
   }
 
   function mountSlideshow(container, sources, placeholder) {
+    if (!container) return;
     container.innerHTML = "";
     const list = (sources || []).filter(Boolean);
 
@@ -173,9 +180,9 @@
       return;
     }
 
-    const images = list.map((src, index) => {
+    list.forEach((src, index) => {
       const img = document.createElement("img");
-      img.src = src;
+      img.src = mediaUrl(src);
       img.alt = "";
       img.loading = "lazy";
       if (index === 0) img.classList.add("is-active");
@@ -186,10 +193,9 @@
         }
       });
       container.appendChild(img);
-      return img;
     });
 
-    if (images.length <= 1) return;
+    if (list.length <= 1) return;
 
     let index = 0;
     const timer = setInterval(() => {
@@ -214,6 +220,7 @@
   }
 
   function mountBottomVideo() {
+    if (!els.photoBottom) return;
     els.photoBottom.innerHTML = "";
     if (!VIDEO_BOTTOM) {
       els.photoBottom.innerHTML = `<span class="photo-placeholder">Место для видео</span>`;
@@ -232,38 +239,47 @@
     video.preload = "auto";
 
     const source = document.createElement("source");
-    source.src = VIDEO_BOTTOM;
+    source.src = mediaUrl(VIDEO_BOTTOM);
     source.type = videoMime(VIDEO_BOTTOM);
     video.appendChild(source);
 
     video.addEventListener("error", () => {
-      els.photoBottom.innerHTML = `<span class="photo-placeholder">Не удалось загрузить видео (.mov лучше открывается в Safari; для Chrome/Firefox положи ещё .mp4)</span>`;
+      els.photoBottom.innerHTML = `<span class="photo-placeholder">Не удалось загрузить видео</span>`;
     });
 
     els.photoBottom.appendChild(video);
 
     const tryPlay = () => {
-      video.play().catch(() => {
-        /* браузер может блокировать автозапуск — останутся controls */
-      });
+      video.play().catch(() => {});
     };
     video.addEventListener("loadeddata", tryPlay, { once: true });
     tryPlay();
   }
 
   function showCongrats() {
-    const total = QUESTIONS.length;
-    els.scoreValue.textContent = `Правильных ответов: ${score} из ${total}`;
-    els.scorePhrase.textContent = scorePhrase(score);
-    els.congratsText.textContent = CONGRATS_TEXT;
-
-    stopSlideshows();
-    mountSlideshow(els.slidesLeft, SLIDES_LEFT, "Фото слева");
-    mountSlideshow(els.slidesRight, SLIDES_RIGHT, "Фото справа");
-    mountBottomVideo();
-
+    // Сначала экран — чтобы переход не ломался из‑за медиа/кэша на GitHub Pages
     showScreen("congrats");
-    burstSparkles();
+
+    try {
+      const total = QUESTIONS.length;
+      if (els.scoreValue) {
+        els.scoreValue.textContent = `Правильных ответов: ${score} из ${total}`;
+      }
+      if (els.scorePhrase) {
+        els.scorePhrase.textContent = scorePhrase(score);
+      }
+      if (els.congratsText) {
+        els.congratsText.textContent = CONGRATS_TEXT || "";
+      }
+
+      stopSlideshows();
+      mountSlideshow(els.slidesLeft, SLIDES_LEFT, "Фото слева");
+      mountSlideshow(els.slidesRight, SLIDES_RIGHT, "Фото справа");
+      mountBottomVideo();
+      burstSparkles();
+    } catch (err) {
+      console.error("congrats render error:", err);
+    }
   }
 
   function createSparkles() {
