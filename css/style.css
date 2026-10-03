@@ -183,7 +183,7 @@ body {
 .congrats-text {
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 2.6vw, 1.45rem);
-  font-weight: 500;
+  font-weight: 700;
   font-style: italic;
   line-height: 1.55;
   color: var(--rose-950);
