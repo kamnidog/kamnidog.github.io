@@ -181,9 +181,12 @@ body {
 
 .lead,
 .congrats-text {
-  font-size: 1.05rem;
-  line-height: 1.65;
-  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.6vw, 1.45rem);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--rose-950);
   max-width: 38rem;
 }
 
@@ -621,7 +624,6 @@ body {
 .congrats-text {
   margin: 1.25rem auto 0;
   white-space: pre-line;
-  font-size: 1.12rem;
   max-width: 40rem;
 }
 
