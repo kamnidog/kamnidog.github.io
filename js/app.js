@@ -4,6 +4,7 @@
     HINTS,
     QUESTIONS,
     CONGRATS_TEXT,
+    PROMO_CODE,
     SCORE_MESSAGES,
     CORRECT_TOASTS,
     SLIDE_INTERVAL_MS,
@@ -33,6 +34,8 @@
     scoreValue: document.getElementById("score-value"),
     scorePhrase: document.getElementById("score-phrase"),
     congratsText: document.getElementById("congrats-text"),
+    promoBlock: document.getElementById("promo-block"),
+    promoCode: document.getElementById("promo-code"),
     slidesLeft: document.getElementById("slides-left"),
     slidesRight: document.getElementById("slides-right"),
     photoBottom: document.getElementById("photo-bottom"),
@@ -160,7 +163,9 @@
       setTimeout(goNext, 900);
     } else {
       button.classList.add("is-picked", "is-wrong");
-      setTimeout(goNext, 420);
+      const correctBtn = els.answers.querySelector(`[data-index="${q.correct}"]`);
+      if (correctBtn) correctBtn.classList.add("is-correct");
+      setTimeout(goNext, 1100);
     }
   }
 
@@ -270,6 +275,14 @@
       }
       if (els.congratsText) {
         els.congratsText.textContent = CONGRATS_TEXT || "";
+      }
+      if (els.promoBlock && els.promoCode) {
+        if (PROMO_CODE) {
+          els.promoCode.textContent = PROMO_CODE;
+          els.promoBlock.hidden = false;
+        } else {
+          els.promoBlock.hidden = true;
+        }
       }
 
       stopSlideshows();
